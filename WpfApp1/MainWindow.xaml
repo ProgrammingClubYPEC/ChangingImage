@@ -1,0 +1,77 @@
+﻿<Window x:Class="ChangingImage.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChangingImage"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <ListBox ItemsSource="{Binding ProductList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical" Width="250" Height="250" >
+                        <!--Область отображения изображений-->
+                        <ListBox x:Name="test" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Padding="0" BorderThickness="0" MouseMove="ListBox_MouseMove" MouseLeave="ListBox_MouseLeave" HorizontalContentAlignment="Stretch" ItemsSource="{Binding ImageSources}" SelectedIndex="0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Grid></Grid><!--В качестве контейнера элементов будет выступать grid. Тогда все элементы будут накладываться друг на друга-->
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Height="200" Stretch="Fill" Source="{Binding Path}"></Image><!--В качесте шаблона элементов будет выступать изображение-->
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle> <!--Задаем стиль для элементов внутри listBox: убираем отступы, границы и фокусировку, чтобы нельзя было выбирать элементы -->
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Focusable" Value="False"></Setter>
+                                    <Setter Property="Padding" Value="0"></Setter>
+                                    <Setter Property="BorderThickness" Value="0"></Setter>
+                                    <Style.Triggers> <!--Задаем триггер, который будет отображать поверх других элементов "выделенный" элемент (выделять элемент будем программно)-->
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="10000"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                        <!--Область отображения кружочков-->
+                        <ListBox SelectedIndex="{Binding ElementName=test, Path=SelectedIndex}" BorderThickness="0" ItemsSource="{Binding ImageSources}" Width="auto"> <!--Значение SelectedIndex будем брать у ListBox с изображениями.-->
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"></StackPanel> <!--В качестве контейнера установим StackPanel в горизонтальной орентации.-->
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Margin="1,0" Width="7" Height="7" Fill="#B3BCC5"></Ellipse> <!--Элементом ListBox будет служить круг серого цвета-->
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Focusable" Value="False"></Setter>
+                                    <Setter Property="Padding" Value="0"></Setter>
+                                    <Setter Property="BorderThickness" Value="0"></Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True"> <!--Если элемент выделен, то меняем серый кружок на синий-->
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Ellipse Margin="1,0" Width="7" Height="7" Fill="#005BFF"></Ellipse>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                        <TextBlock HorizontalAlignment="Center" FontSize="20" Text="{Binding Title}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+    
+</Window>
